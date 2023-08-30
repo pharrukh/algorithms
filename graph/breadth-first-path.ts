@@ -1,25 +1,38 @@
+import { Queue } from "../queue/queue"
 import { Stack } from "../stack/stack"
 import { Graph } from "./graph"
 import { Paths } from "./types"
-export class DepthFirstPath implements Paths {
-  private edgeTo: number[]
-  private marked: boolean[]
 
-  constructor(G: Graph, private s: number) {
+class BreadthFirstPath implements Paths {
+  private marked: boolean[]
+  private edgeTo: number[]
+  private readonly s: number
+
+  constructor(G: Graph, s: number) {
     this.marked = Array.from({ length: G.V() }, () => false)
     this.edgeTo = Array.from({ length: G.V() })
 
-    this.dfs(G, s)
+    this.bfs(G, s)
   }
 
-  private dfs(G: Graph, v: number) {
-    this.marked[v] = true
+  private bfs(G: Graph, s: number): void {
+    const q = new Queue<number>()
+    q.enqueue(s)
+    this.marked[s] = true
 
-    for (let w of G.adj(v)) {
-      if (this.marked[w]) continue
-      this.edgeTo[w] = v
-      this.dfs(G, w)
+    while (!q.isEmpty()) {
+      const v = q.dequeue()
+      for (let w of G.adj(v)) {
+        if (this.isMarked(w)) continue
+        this.edgeTo[w] = v
+        this.marked[w] = true
+        q.enqueue(w)
+      }
     }
+  }
+
+  private isMarked(w: number) {
+    return this.marked[w]
   }
 
   hasPathTo(v: number): boolean {
@@ -27,11 +40,11 @@ export class DepthFirstPath implements Paths {
   }
 
   pathTo(v: number): Iterable<number> {
-    if (!this.hasPathTo(v)) return null
-    const path = new Stack<number>()
-    for (let x = v; x != this.s; x = this.edgeTo[x]) path.push(x)
-    path.push(this.s)
-    return path
+    const stack = new Stack<number>()
+    for (let x = v; x != this.s; x = this.edgeTo[x]) {
+      stack.push(x)
+    }
+    return stack
   }
 
   toString(): string {
@@ -51,7 +64,7 @@ export class DepthFirstPath implements Paths {
 
 async function main(s: number): Promise<void> {
   const g = await Graph.ininialize("tinyCG.txt")
-  const search = new DepthFirstPath(g, s)
+  const search = new BreadthFirstPath(g, s)
   console.log(search.toString())
 
   let str = ""
