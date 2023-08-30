@@ -3,14 +3,22 @@ import { createReadStream } from "node:fs"
 import { createInterface } from "node:readline"
 
 export class Graph {
-  private readonly V: number
-  private E: number
+  private readonly vCount: number
+  private eCount: number
   private adjList: Bag<number>[]
 
   constructor(V: number) {
-    this.V = V
-    this.E = 0
+    this.vCount = V
+    this.eCount = 0
     this.adjList = Array.from({ length: V }, () => new Bag<number>())
+  }
+
+  V(): number {
+    return this.vCount
+  }
+
+  E(): number {
+    return this.eCount
   }
 
   static async ininialize(path: string): Promise<Graph> {
@@ -27,7 +35,7 @@ export class Graph {
 
     const graph = new Graph(parseInt(line1.value))
     const E = parseInt(line2.value)
-    console.log(line1, line2)
+
     for (let i = 0; i < E; i++) {
       const nextLine = await iterator.next()
       const nums = nextLine.value.split(" ")
@@ -42,7 +50,7 @@ export class Graph {
   addEdge(v: number, w: number): void {
     this.adjList[v].add(w)
     this.adjList[w].add(v)
-    this.E++
+    this.eCount++
   }
 
   adj(v: number): Iterable<number> {
@@ -50,8 +58,8 @@ export class Graph {
   }
 
   toString(): string {
-    let str = ''
-    for(let i = 0; i < this.E; i++) {
+    let str = ""
+    for (let i = 0; i < this.eCount; i++) {
       const bag = this.adjList[i]
       str += `${i} : ${bag.toString()}\n`
     }
@@ -59,7 +67,7 @@ export class Graph {
   }
 }
 
-;(async () => {
-  const graph = await Graph.ininialize("tinyG.txt")
-  console.log(graph.toString())
-})()
+// ;(async () => {
+//   const graph = await Graph.ininialize("tinyG.txt")
+//   console.log(graph.toString())
+// })()
