@@ -57,7 +57,6 @@ export class DepthFirstPath implements Paths {
 async function main(s: number): Promise<void> {
   const g = await Graph.ininialize("tinyCG.txt")
   const search = new DepthFirstPath(g, s)
-  // console.log(g.toString())
   console.log(search.toString())
 
   let str = ""
