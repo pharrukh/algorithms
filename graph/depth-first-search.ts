@@ -1,3 +1,4 @@
+import { Stack } from "../stack/stack"
 import { Graph } from "./graph"
 
 interface Search {
@@ -16,11 +17,16 @@ export class DepthFirstSearch implements Search {
   }
 
   private dfs(G: Graph, v: number): void {
-    this.marked[v] = true
-    this.count++
+    const stack = new Stack<number>()
+    stack.push(v)
 
-    for (let w of G.adj(v)) {
-      if (!this.isMarked(w)) this.dfs(G, w)
+    while (!stack.isEmpty()) {
+      const w = stack.pop()
+      this.marked[w] = true
+      this.count++
+      for (let x of G.adj(w)) {
+        if (!this.marked[x]) stack.push(x)
+      }
     }
   }
 
