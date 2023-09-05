@@ -47,6 +47,33 @@ export class Graph {
     return graph
   }
 
+  static async initializeFromAdjLists(path: string): Promise<Graph> {
+    const fileStream = createReadStream(path)
+    const rl = createInterface({
+      input: fileStream,
+      crlfDelay: Infinity,
+    })
+
+    const iterator = rl[Symbol.asyncIterator]()
+    const line1 = await iterator.next()
+    const line2 = await iterator.next()
+
+    const graph = new Graph(parseInt(line1.value))
+    const E = parseInt(line2.value)
+
+    let i = 0
+    while (i < E) {
+      const nextLine = await iterator.next()
+      const [v, ...adjList] = nextLine.value.split(" ").map((n) => parseInt(n))
+      for (let w of adjList) {
+        graph.addEdge(v, w)
+        i++
+      }
+    }
+
+    return graph
+  }
+
   addEdge(v: number, w: number): void {
     this.adjList[v].add(w)
     this.adjList[w].add(v)
@@ -68,6 +95,6 @@ export class Graph {
 }
 
 // ;(async () => {
-//   const graph = await Graph.ininialize("tinyG.txt")
+//   const graph = await Graph.initializeFromAdjLists("tinyGadj.txt")
 //   console.log(graph.toString())
 // })()
