@@ -1,14 +1,16 @@
 import { Queue } from "../queue/queue"
 import { Graph } from "./graph"
-
+type PathKey = `${number}-${number}`
 export class GraphProperties {
   private ecc: Map<number, number> = new Map() // eccentricity
+  private pairDists: Map<PathKey, number> = new Map()
   private distTo: number[] = []
   private edgeTo: number[] = []
 
   public diameter: number = -Infinity
   public radius: number = Infinity
   public center: number
+  public wienerIndex: number
 
   constructor(G: Graph) {
     for (let v = 0; v < G.V(); v++) {
@@ -17,32 +19,19 @@ export class GraphProperties {
       this.edgeTo[v] = null
     }
 
-    const root = 0
-    this.bfs(G, root)
+    const isAdded = (v: number, w: number) =>
+      [`${v}-${w}`, `${w}-${v}`].some((key: PathKey) => this.pairDists.has(key))
 
-    const pairs: [number, number][] = []
     for (let v = 0; v < G.V(); v++) {
-      for (let w = v + 1; w < G.V(); w++) {
-        pairs.push([v, w])
-      }
-    }
-
-    for (const [v, w] of pairs) {
-      let e = 0
-      let x = w
-      while (x !== root || x !== v) {
-        e++
-        x = this.edgeTo[x]
-        if (x === root) {
-          e = this.distTo[w] + this.distTo[v]
-          break
-        }
-        if (x === v) {
-          break
+      this.bfs(G, v)
+      for (let w = 0; w < G.V(); w++) {
+        if (w !== v) {
+          const e = this.distTo[w]
+          if (!isAdded(v, w)) this.pairDists.set(`${v}-${w}`, e)
+          this.ecc.set(v, Math.max(e, this.ecc.get(v) || 0))
+          this.ecc.set(w, Math.max(e, this.ecc.get(w) || 0))
         }
       }
-      this.ecc.set(v, Math.max(e, this.ecc.get(v)))
-      this.ecc.set(w, Math.max(e, this.ecc.get(w)))
     }
 
     for (let [v, e] of this.ecc) {
@@ -52,6 +41,10 @@ export class GraphProperties {
         this.center = v
       }
     }
+
+    // console.log(this.pairDists)
+    const distances = Array.from(this.pairDists.values())
+    this.wienerIndex = distances.reduce((acc, a) => acc + a, 0)
   }
 
   private bfs(G: Graph, s: number): void {
@@ -80,6 +73,7 @@ export class GraphProperties {
       diameter: ${this.diameter}
       radius: ${this.radius}
       center: ${this.center}
+      wiener index: ${this.wienerIndex}
     `
   }
 }
