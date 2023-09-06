@@ -2,42 +2,76 @@ import { Queue } from "../queue/queue"
 import { Graph } from "./graph"
 
 export class GraphProperties {
-  private ecc: number[] // eccentricity
+  private ecc: Map<number, number> = new Map() // eccentricity
+  private distTo: number[] = []
+  private edgeTo: number[] = []
 
-  public diameter: number
-  public radius: number
+  public diameter: number = -Infinity
+  public radius: number = Infinity
   public center: number
 
   constructor(G: Graph) {
-    this.ecc = Array.from({ length: G.V() }, () => null)
-    for (let v = 0; v < G.V(); v++) this.bfs(G, v)
-    this.diameter = Math.max(...this.ecc)
-    this.radius = Math.min(...this.ecc)
-    this.center = this.ecc.indexOf(this.radius)
+    for (let v = 0; v < G.V(); v++) {
+      this.ecc.set(v, 0)
+      this.distTo[v] = 0
+      this.edgeTo[v] = null
+    }
+
+    const root = 0
+    this.bfs(G, root)
+
+    const pairs: [number, number][] = []
+    for (let v = 0; v < G.V(); v++) {
+      for (let w = v + 1; w < G.V(); w++) {
+        pairs.push([v, w])
+      }
+    }
+
+    for (const [v, w] of pairs) {
+      let e = 0
+      let x = w
+      while (x !== root || x !== v) {
+        e++
+        x = this.edgeTo[x]
+        if (x === root) {
+          e = this.distTo[w] + this.distTo[v]
+          break
+        }
+        if (x === v) {
+          break
+        }
+      }
+      this.ecc.set(v, Math.max(e, this.ecc.get(v)))
+      this.ecc.set(w, Math.max(e, this.ecc.get(w)))
+    }
+
+    for (let [v, e] of this.ecc) {
+      this.diameter = Math.max(this.diameter, e)
+      if (this.radius > e) {
+        this.radius = e
+        this.center = v
+      }
+    }
   }
 
   private bfs(G: Graph, s: number): void {
     const marked = Array.from({ length: G.V() }, () => false)
-    const distTo = Array.from({ length: G.V() }, () => 0)
+
     const q = new Queue<number>()
     q.enqueue(s)
     marked[s] = true
-    distTo[s] = 0
-    let maxEcc = 0
+    this.distTo[s] = 0
 
     while (!q.isEmpty()) {
       const v = q.dequeue()
       for (let w of G.adj(v)) {
         if (marked[w]) continue
-        distTo[w] = distTo[v] + 1
+        this.distTo[w] = this.distTo[v] + 1
         marked[w] = true
+        this.edgeTo[w] = v
         q.enqueue(w)
-
-        maxEcc = Math.max(maxEcc, distTo[w])
       }
     }
-
-    this.ecc[s] = maxEcc
   }
 
   toString(): string {
