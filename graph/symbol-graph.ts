@@ -2,6 +2,7 @@ import { createReadStream } from "fs"
 import { Graph } from "./graph"
 import { createInterface, moveCursor } from "readline"
 import { BreadthFirstPath } from "./breadth-first-path"
+import { Edge } from "./types"
 
 export class SymbolGraph {
   keyMap: Map<string, number> = new Map()
@@ -66,38 +67,63 @@ export class SymbolGraph {
 
     return sg
   }
-}
 
-;(async () => {
-  const sg = await SymbolGraph.init("./movies.txt", "/")
-  console.log("V:", sg.G.V(), " E:", sg.G.E())
-  const g = sg.G
-  const source = "Bacon, Kevin"
-  if (!sg.contains(source))
-    throw new Error(`The symbol graph does not have "${source}"`)
+  constructor(set: Set<Edge> = null) {
+    if (set === null) return
 
-  const s = sg.index(source)
-  const bfs = new BreadthFirstPath(g, s)
+    let i = 0
+    for (const edge of set) {
+      const [key1, key2] = edge.split("-")
+      this.keyMap.set(key1, i)
+      this.keys[i] = key1
+      i++
 
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  })
+      this.keyMap.set(key2, i)
+      this.keys[i] = key2
+      i++
+    }
 
-  for await (const sink of rl) {
-    if (sg.contains(sink)) {
-      const t = sg.index(sink)
-      if (bfs.hasPathTo(t)) {
-        for (const v of bfs.pathTo(t)) {
-          console.log("   " + sg.name(v))
-        }
-      } else {
-        console.log("Not connected")
-      }
-    } else {
-      console.log("   Not in database.")
+    this.G = new Graph(this.keys.length)
+
+    for (const edge of set) {
+      const [key1, key2] = edge.split("-")
+      const v = this.index(key1)
+      const w = this.index(key2)
+      this.G.addEdge(v, w)
     }
   }
+}
 
-  rl.close()
-})()
+// ;(async () => {
+//   const sg = await SymbolGraph.init("./movies.txt", "/")
+//   console.log("V:", sg.G.V(), " E:", sg.G.E())
+//   const g = sg.G
+//   const source = "Bacon, Kevin"
+//   if (!sg.contains(source))
+//     throw new Error(`The symbol graph does not have "${source}"`)
+
+//   const s = sg.index(source)
+//   const bfs = new BreadthFirstPath(g, s)
+
+//   const rl = createInterface({
+//     input: process.stdin,
+//     output: process.stdout,
+//   })
+
+//   for await (const sink of rl) {
+//     if (sg.contains(sink)) {
+//       const t = sg.index(sink)
+//       if (bfs.hasPathTo(t)) {
+//         for (const v of bfs.pathTo(t)) {
+//           console.log("   " + sg.name(v))
+//         }
+//       } else {
+//         console.log("Not connected")
+//       }
+//     } else {
+//       console.log("   Not in database.")
+//     }
+//   }
+
+//   rl.close()
+// })()

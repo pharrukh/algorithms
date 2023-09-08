@@ -3,7 +3,7 @@ import { Graph } from "./graph"
 type PathKey = `${number}-${number}`
 export class GraphProperties {
   private ecc: Map<number, number> = new Map() // eccentricity
-  private pairDists: Map<PathKey, number> = new Map()
+  // private pairDists: Map<PathKey, number> = new Map()
   private distTo: number[] = []
   private edgeTo: number[] = []
   private girth: number = Infinity
@@ -20,22 +20,15 @@ export class GraphProperties {
       this.edgeTo[v] = null
     }
 
-    const isAdded = (v: number, w: number) =>
-      [`${v}-${w}`, `${w}-${v}`].some((key: PathKey) => this.pairDists.has(key))
+    // const isAdded = (v: number, w: number) =>
+    //   [`${v}-${w}`, `${w}-${v}`].some((key: PathKey) => this.pairDists.has(key))
 
     for (let v = 0; v < G.V(); v++) {
-      const shortestCycleLength = this.bfs(G, v)
-      this.girth = Math.min(shortestCycleLength, this.girth)
-
-      for (let w = 0; w < G.V(); w++) {
-        if (w !== v) {
-          const e = this.distTo[w]
-          if (!isAdded(v, w)) this.pairDists.set(`${v}-${w}`, e)
-          this.ecc.set(v, Math.max(e, this.ecc.get(v) || 0))
-          this.ecc.set(w, Math.max(e, this.ecc.get(w) || 0))
-        }
-      }
-    }
+      this.bfs(G, v);
+      const maxDist = Math.max(...this.distTo);
+      this.ecc.set(v, maxDist);
+      console.log(`progress ${v / G.V()} %`);
+  }
 
     for (let [v, e] of this.ecc) {
       this.diameter = Math.max(this.diameter, e)
@@ -46,8 +39,8 @@ export class GraphProperties {
     }
 
     // console.log(this.pairDists)
-    const distances = Array.from(this.pairDists.values())
-    this.wienerIndex = distances.reduce((acc, a) => acc + a, 0)
+    // const distances = Array.from(this.pairDists.values())
+    // this.wienerIndex = distances.reduce((acc, a) => acc + a, 0)
   }
 
   private bfs(G: Graph, s: number): number {
@@ -91,43 +84,43 @@ export class GraphProperties {
   }
 }
 
-const g = new Graph(6)
-const edges = [
-  [0, 1],
-  [0, 2],
-  [2, 3],
-  [2, 4],
-  [4, 5],
-]
-edges.forEach(([p, q]) => g.addEdge(p, q))
-console.log(new GraphProperties(g).toString())
+// const g = new Graph(6)
+// const edges = [
+//   [0, 1],
+//   [0, 2],
+//   [2, 3],
+//   [2, 4],
+//   [4, 5],
+// ]
+// edges.forEach(([p, q]) => g.addEdge(p, q))
+// console.log(new GraphProperties(g).toString())
 
-// 0 -- 1 -- 2 -- 3 -- 4 -- 5 -- 6 -- 7 -- 8 -- 9 -- 10
-const g2 = new Graph(11)
-const edges2 = [
-  [0, 1],
-  [1, 2],
-  [2, 3],
-  [3, 4],
-  [4, 5],
-  [5, 6],
-  [6, 7],
-  [7, 8],
-  [8, 9],
-  [9, 10],
-]
-edges2.forEach(([p, q]) => g2.addEdge(p, q))
-console.log(new GraphProperties(g2).toString())
+// // 0 -- 1 -- 2 -- 3 -- 4 -- 5 -- 6 -- 7 -- 8 -- 9 -- 10
+// const g2 = new Graph(11)
+// const edges2 = [
+//   [0, 1],
+//   [1, 2],
+//   [2, 3],
+//   [3, 4],
+//   [4, 5],
+//   [5, 6],
+//   [6, 7],
+//   [7, 8],
+//   [8, 9],
+//   [9, 10],
+// ]
+// edges2.forEach(([p, q]) => g2.addEdge(p, q))
+// console.log(new GraphProperties(g2).toString())
 
-const cyclicG = new Graph(6)
-const edges3 = [
-  [0, 1],
-  [0, 2],
-  [0, 3],
-  [1, 5],
-  [2, 4],
-  [3, 4],
-  [4, 5],
-]
-edges3.forEach(([p, q]) => cyclicG.addEdge(p, q))
-console.log(new GraphProperties(cyclicG).toString())
+// const cyclicG = new Graph(6)
+// const edges3 = [
+//   [0, 1],
+//   [0, 2],
+//   [0, 3],
+//   [1, 5],
+//   [2, 4],
+//   [3, 4],
+//   [4, 5],
+// ]
+// edges3.forEach(([p, q]) => cyclicG.addEdge(p, q))
+// console.log(new GraphProperties(cyclicG).toString())
