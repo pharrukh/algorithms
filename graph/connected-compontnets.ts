@@ -1,34 +1,33 @@
 import { Queue } from "../queue/queue"
 import { Graph } from "./graph"
 
-export class ConnectedComponents {
+class ConnectedComponents {
   private marked: boolean[]
+  ids: number[]
+  components: number[][]
   private count: number = 0
-  private ids: number[]
 
   constructor(G: Graph) {
-    this.ids = Array.from({ length: G.V() })
     this.marked = Array.from({ length: G.V() }, () => false)
+    this.components = Array.from({ length: G.V() }, () => [])
+    this.ids = Array.from({ length: G.V() }, () => null)
 
-    for (let s = 0; s < G.V(); s++) {
-      if (this.marked[s]) continue
-      this.dfs(G, s)
+    for (let v = 0; v < G.V(); v++) {
+      if (this.marked[v]) continue
+      this.dfs(G, v)
       this.count++
     }
   }
 
-  private dfs(G: Graph, v: number) {
-    this.marked[v] = true
+  private dfs(G: Graph, v: number): void {
+    this.components[this.count].push(v)
     this.ids[v] = this.count
+    this.marked[v] = true
 
     for (let w of G.adj(v)) {
       if (this.marked[w]) continue
       this.dfs(G, w)
     }
-  }
-
-  connected(v: number, w: number): boolean {
-    return this.id(v) === this.id(w)
   }
 
   getCount(): number {
@@ -45,7 +44,7 @@ export class ConnectedComponents {
 })()
 
 async function main(): Promise<void> {
-  const g = await Graph.ininialize("tinyG.txt")
+  const g = await Graph.ininialize("tinyGex2.txt")
   const cc = new ConnectedComponents(g)
   // console.log(cc.toString())
 

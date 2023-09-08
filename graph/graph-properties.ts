@@ -6,6 +6,7 @@ export class GraphProperties {
   private pairDists: Map<PathKey, number> = new Map()
   private distTo: number[] = []
   private edgeTo: number[] = []
+  private girth: number = Infinity
 
   public diameter: number = -Infinity
   public radius: number = Infinity
@@ -23,7 +24,9 @@ export class GraphProperties {
       [`${v}-${w}`, `${w}-${v}`].some((key: PathKey) => this.pairDists.has(key))
 
     for (let v = 0; v < G.V(); v++) {
-      this.bfs(G, v)
+      const shortestCycleLength = this.bfs(G, v)
+      this.girth = Math.min(shortestCycleLength, this.girth)
+
       for (let w = 0; w < G.V(); w++) {
         if (w !== v) {
           const e = this.distTo[w]
@@ -47,7 +50,8 @@ export class GraphProperties {
     this.wienerIndex = distances.reduce((acc, a) => acc + a, 0)
   }
 
-  private bfs(G: Graph, s: number): void {
+  private bfs(G: Graph, s: number): number {
+    let shortestCycleLength = Infinity
     const marked = Array.from({ length: G.V() }, () => false)
 
     const q = new Queue<number>()
@@ -58,13 +62,21 @@ export class GraphProperties {
     while (!q.isEmpty()) {
       const v = q.dequeue()
       for (let w of G.adj(v)) {
-        if (marked[w]) continue
-        this.distTo[w] = this.distTo[v] + 1
-        marked[w] = true
-        this.edgeTo[w] = v
-        q.enqueue(w)
+        if (!marked[w]) {
+          this.distTo[w] = this.distTo[v] + 1
+          marked[w] = true
+          this.edgeTo[w] = v
+          q.enqueue(w)
+
+          // cycle condition / detection
+        } else if (w !== this.edgeTo[v]) {
+          const len = this.distTo[w] + this.distTo[v] + 1
+          shortestCycleLength = Math.min(shortestCycleLength, len)
+        }
       }
     }
+
+    return shortestCycleLength
   }
 
   toString(): string {
@@ -74,6 +86,7 @@ export class GraphProperties {
       radius: ${this.radius}
       center: ${this.center}
       wiener index: ${this.wienerIndex}
+      girth: ${this.girth}
     `
   }
 }
@@ -105,3 +118,16 @@ const edges2 = [
 ]
 edges2.forEach(([p, q]) => g2.addEdge(p, q))
 console.log(new GraphProperties(g2).toString())
+
+const cyclicG = new Graph(6)
+const edges3 = [
+  [0, 1],
+  [0, 2],
+  [0, 3],
+  [1, 5],
+  [2, 4],
+  [3, 4],
+  [4, 5],
+]
+edges3.forEach(([p, q]) => cyclicG.addEdge(p, q))
+console.log(new GraphProperties(cyclicG).toString())
