@@ -57,8 +57,8 @@ export class SymbolGraph {
     while (!line.done) {
       const [movie, ...actors] = line.value.split(separator)
       for (const actor of actors) {
-        const v = sg.keyMap.get(movie)
-        const w = sg.keyMap.get(actor)
+        const v = sg.index(movie)
+        const w = sg.index(actor)
         g.addEdge(v, w)
       }
       line = await iterator2.next()
@@ -74,13 +74,19 @@ export class SymbolGraph {
     let i = 0
     for (const edge of set) {
       const [key1, key2] = edge.split("-")
-      this.keyMap.set(key1, i)
-      this.keys[i] = key1
-      i++
+      if (!this.keyMap.has(key1)) {
+        this.keyMap.set(key1, i)
+        this.keys[i] = key1
+        i++
+      }
 
-      this.keyMap.set(key2, i)
-      this.keys[i] = key2
-      i++
+      if (!this.keyMap.has(key2)) {
+        this.keyMap.set(key2, i)
+        this.keys[i] = key2
+        i++
+      }
+
+      // console.log(edge, this.keyMap, this.keys)
     }
 
     this.G = new Graph(this.keys.length)

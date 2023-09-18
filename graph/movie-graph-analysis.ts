@@ -1,46 +1,11 @@
 /// 4.1.24
 
 import { Stack } from "../stack/stack"
+import { ConnectedComponents } from "./connected-compontnets"
 import { Graph } from "./graph"
 import { GraphProperties } from "./graph-properties"
 import { SymbolGraph } from "./symbol-graph"
 import { Edge } from "./types"
-
-function getComponents(G: Graph): number[][] {
-  const components: number[][] = []
-  let count = 0
-
-  const marked = Array.from({ length: G.V() }, () => false)
-
-  function dfs(v: number): void {
-    const s = new Stack<number>()
-    s.push(v)
-    marked[v] = true
-
-    while (!s.isEmpty()) {
-      const v = s.pop()
-
-      if (!components[count]) components[count] = []
-      components[count].push(v)
-
-      for (let w of G.adj(v)) {
-        if (marked[w]) continue
-        marked[w] = true
-
-        s.push(w)
-      }
-    }
-  }
-
-  for (let v = 0; v < G.V(); v++) {
-    if (marked[v]) continue
-    dfs(v)
-    count++
-  }
-
-  return components
-}
-
 ;(async () => {
   const sg = await SymbolGraph.init("movies.txt", "/")
   const g = sg.G
@@ -48,7 +13,8 @@ function getComponents(G: Graph): number[][] {
   if (!sg.contains(kevinBaconKey))
     throw new Error("The symbol graph does not have the key.")
 
-  const components = getComponents(g)
+  const cc = new ConnectedComponents(g)
+  const components = cc.components
   let maxCompId
   let maxSize = -Infinity
 
@@ -59,13 +25,7 @@ function getComponents(G: Graph): number[][] {
     }
   }
 
-  console.log(
-    `number of components`,
-    components.length,
-    maxCompId,
-    components[maxCompId],
-    maxSize
-  )
+  console.log(`number of components`, cc.getCount())
 
   const edgeSet = new Set<Edge>()
   for (const v of components[maxCompId]) {
@@ -79,10 +39,11 @@ function getComponents(G: Graph): number[][] {
   }
   console.log(`set length ${edgeSet.size}`)
 
-  const subSg = new SymbolGraph(edgeSet)
-  console.log("symbol graph is built")
-  const gProps = new GraphProperties(subSg.G)
-  console.log("properties are calculated")
+  const subSg = new SymbolGraph(edgeSet)n
+  console.log(`symbol graph is built: ${subSg.G.V()} ${subSg.G.E()}`)
+  console.log(subSg.name(297 + 1))
+  // const gProps = new GraphProperties(subSg.G)
+
   console.log(`
   # of conn components: ${components.length}
   max component size: ${maxSize}
@@ -90,7 +51,7 @@ function getComponents(G: Graph): number[][] {
     components.map((c) => c.length).filter((l) => l < 10).length
   }
   `)
-  console.log(gProps.toString())
+  // console.log(gProps.toString())
   console.log(
     `Does the largest component have Kevin Bacon? ${
       subSg.contains(kevinBaconKey) ? "yes" : "no"

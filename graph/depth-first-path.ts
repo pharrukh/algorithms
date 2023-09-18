@@ -12,13 +12,19 @@ export class DepthFirstPath implements Paths {
     this.dfs(G, s)
   }
 
-  private dfs(G: Graph, v: number) {
-    this.marked[v] = true
+  private dfs(G: Graph, u: number) {
+    const stack = new Stack<number>()
+    stack.push(u)
 
-    for (let w of G.adj(v)) {
-      if (this.marked[w]) continue
-      this.edgeTo[w] = v
-      this.dfs(G, w)
+    while(!stack.isEmpty()) {
+      const v = stack.pop()
+      this.marked[v] = true
+
+      for (let w of G.adj(v)) {
+        if (this.marked[w]) continue
+        this.edgeTo[w] = v
+        stack.push(w)
+      }
     }
   }
 
@@ -44,27 +50,27 @@ export class DepthFirstPath implements Paths {
   }
 }
 
-;(async () => {
-  await main(0)
-  await main(3)
-})()
+// ;(async () => {
+//   await main(0)
+//   await main(3)
+// })()
 
-async function main(s: number): Promise<void> {
-  const g = await Graph.ininialize("tinyCG.txt")
-  const search = new DepthFirstPath(g, s)
-  console.log(search.toString())
+// async function main(s: number): Promise<void> {
+//   const g = await Graph.ininialize("tinyCG.txt")
+//   const search = new DepthFirstPath(g, s)
+//   console.log(search.toString())
 
-  let str = ""
-  for (let v = 0; v < g.V(); v++) {
-    str += s + " to " + v + ": "
-    if (search.hasPathTo(v)) {
-      for (let x of search.pathTo(v)) {
-        if (x === s) str += x
-        else str += "-" + x
-      }
-    }
-    str += "\n"
-  }
+//   let str = ""
+//   for (let v = 0; v < g.V(); v++) {
+//     str += s + " to " + v + ": "
+//     if (search.hasPathTo(v)) {
+//       for (let x of search.pathTo(v)) {
+//         if (x === s) str += x
+//         else str += "-" + x
+//       }
+//     }
+//     str += "\n"
+//   }
 
-  console.log(str)
-}
+//   console.log(str)
+// }

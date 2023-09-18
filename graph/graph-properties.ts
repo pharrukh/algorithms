@@ -23,12 +23,31 @@ export class GraphProperties {
     // const isAdded = (v: number, w: number) =>
     //   [`${v}-${w}`, `${w}-${v}`].some((key: PathKey) => this.pairDists.has(key))
 
+    // for (let v = 0; v < G.V(); v++) {
+    //   const shortestCycleLength = this.bfs(G, v)
+    //   this.girth = Math.min(shortestCycleLength, this.girth)
+
+    //   for (let w = 0; w < G.V(); w++) {
+    //     if (w !== v) {
+    //       const e = this.distTo[w]
+    //       // if (!isAdded(v, w)) this.pairDists.set(`${v}-${w}`, e)
+    //       this.ecc.set(v, Math.max(e, this.ecc.get(v) || 0))
+    //       // this.ecc.set(w, Math.max(e, this.ecc.get(w) || 0))
+    //     }
+    //   }
+    //   console.log(`progress ${(v * 100) / G.V()} % ${v}/${G.V()}`)
+    // }
+
     for (let v = 0; v < G.V(); v++) {
-      this.bfs(G, v);
-      const maxDist = Math.max(...this.distTo);
-      this.ecc.set(v, maxDist);
-      console.log(`progress ${v / G.V()} %`);
-  }
+      this.bfs(G, v)
+
+      let maxDist = -Infinity
+      this.distTo.forEach((d) => (maxDist = Math.max(maxDist, d)))
+      this.ecc.set(v, maxDist)
+      console.log(
+        `progress ${Math.round((v * 10000) / G.V()) / 100} % ${v}/${G.V()}`
+      )
+    }
 
     for (let [v, e] of this.ecc) {
       this.diameter = Math.max(this.diameter, e)
