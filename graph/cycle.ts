@@ -3,15 +3,19 @@ import { Graph } from "./graph"
 // functional solution
 function hasCycle(G: Graph): boolean {
   const marked = Array.from({ length: G.V() }, () => false)
+  const edgeTo = Array.from({ length: G.V() }, () => null)
+
   let isCycleFound = false
   // console.log(marked)
   function dfs(v: number, u: number): void {
     marked[v] = true
+    edgeTo[v] = u
     for (let w of G.adj(v)) {
       // console.log(w, v, u, marked[w], w != u, G.adj(v).toString())
       if (!marked[w]) dfs(w, v)
       else {
-        if (w != u) isCycleFound = true
+        console.log(u, v, w, w != u && v !== w)
+        if (w != u && v !== w && v !== edgeTo[w]) isCycleFound = true
       }
     }
   }
@@ -25,7 +29,9 @@ function hasCycle(G: Graph): boolean {
 
 const noCycleGraph = new Graph(7)
 const edges1 = [
+  [0, 0], // self-loop
   [2, 1],
+  [1, 2], // parallel edge
   [1, 3],
   [2, 6],
   [2, 4],
