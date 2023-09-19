@@ -13,8 +13,12 @@ export class Stack<T> {
     return this.arr.pop()
   }
 
+  peek(): T {
+    return this.arr[this.arr.length - 1]
+  }
+
   *iterator(): Iterator<T> {
-    while(this.arr.length) yield this.arr.pop()
+    while (this.arr.length) yield this.arr.pop()
   }
 
   [Symbol.iterator]() {

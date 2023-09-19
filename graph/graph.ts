@@ -75,18 +75,44 @@ export class Graph {
   }
 
   addEdge(v: number, w: number): void {
+    if (v === w) return
     this.adjList[v].add(w)
     this.adjList[w].add(v)
     this.eCount++
   }
 
-  adj(v: number): Iterable<number> {
+  removeEdge(v: number, w: number): void {
+    if (!this.hasEdge(v, w))
+      throw new Error(`The edge (${v}-${w}) does not exist!`)
+    this.adjList[v].remove(w)
+    this.adjList[w].remove(v)
+    this.eCount--
+  }
+
+  adj(v: number): Bag<number> {
     return this.adjList[v]
+  }
+
+  degree(v: number): number {
+    return this.adjList[v].size
+  }
+
+  hasEdge(v: number, w: number): boolean {
+    return this.adjList[v].has(w)
+  }
+
+  private *iterator() {
+    let i = 0
+    while (i < this.V()) yield i++
+  }
+
+  [Symbol.iterator]() {
+    return this.iterator()
   }
 
   toString(): string {
     let str = ""
-    for (let i = 0; i < this.eCount; i++) {
+    for (let i = 0; i < this.vCount; i++) {
       const bag = this.adjList[i]
       str += `${i} : ${bag.toString()}\n`
     }
