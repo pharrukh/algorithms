@@ -1,10 +1,10 @@
-class BagNode<T> {
+export class BagNode<T> {
   constructor(public item: T, public next: BagNode<T> | null) {}
 }
 
 export class Bag<T> {
   public size: number = 0
-  private first: BagNode<T>
+  protected first: BagNode<T>
 
   getAny(): T {
     if (this.first) return this.first.item

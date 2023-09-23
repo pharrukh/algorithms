@@ -2,7 +2,7 @@ import { Stack } from "../stack/stack"
 import { Graph } from "./graph"
 import { Paths } from "./types"
 
-class BreadthFirstPathWithStacks implements Paths {
+export class BreadthFirstPathWithStacks implements Paths {
   private marked: boolean[]
   private edgeTo: number[]
   private readonly s: number

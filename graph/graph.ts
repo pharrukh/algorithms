@@ -3,11 +3,11 @@ import { createReadStream } from "node:fs"
 import { createInterface } from "node:readline"
 
 export class Graph {
-  private readonly vCount: number
+  private vCount: number
   private eCount: number
   private adjList: Bag<number>[]
 
-  constructor(V: number) {
+  constructor(V: number = 0) {
     this.vCount = V
     this.eCount = 0
     this.adjList = Array.from({ length: V }, () => new Bag<number>())
@@ -74,8 +74,21 @@ export class Graph {
     return graph
   }
 
+  hasVertex(v: number): boolean {
+    return v < this.V()
+  }
+
+  addVertex(v: number): void {
+    if (v !== this.V())
+      throw new Error(`${v} not the next vertex ${this.vCount}`)
+    this.adjList[v] = new Bag<number>()
+    this.vCount++
+  }
+
   addEdge(v: number, w: number): void {
-    if (v === w) return
+    const error = `There are only ${this.V()} vertices, you are passing an edge [${v}, ${w}]`
+    if (v >= this.V() || w >= this.V()) throw new Error(error)
+
     this.adjList[v].add(w)
     this.adjList[w].add(v)
     this.eCount++

@@ -1,7 +1,6 @@
 import { createReadStream } from "fs"
 import { Graph } from "./graph"
 import { createInterface, moveCursor } from "readline"
-import { BreadthFirstPath } from "./breadth-first-path"
 import { Edge } from "./types"
 
 export class SymbolGraph {
@@ -38,31 +37,23 @@ export class SymbolGraph {
       sg.keys[i++] = key
     }
 
+    const g = new Graph()
     while (!line.done) {
       const [movie, ...actors] = line.value.split(separator)
       addIfNeeded(movie)
       actors.forEach(addIfNeeded)
+
+      const v = sg.index(movie)
+      g.addVertex(v)
+      for (let actor of actors) {
+        const w = sg.index(actor)
+        if (!g.hasVertex(w)) g.addVertex(w)
+        g.addEdge(v, w)
+      }
+
       line = await iterator.next()
     }
 
-    const g = new Graph(sg.keys.length)
-    const fs2 = createReadStream(path)
-    const rl2 = createInterface({
-      input: fs2,
-      crlfDelay: Infinity,
-    })
-
-    const iterator2 = rl2[Symbol.asyncIterator]()
-    line = await iterator2.next()
-    while (!line.done) {
-      const [movie, ...actors] = line.value.split(separator)
-      for (const actor of actors) {
-        const v = sg.index(movie)
-        const w = sg.index(actor)
-        g.addEdge(v, w)
-      }
-      line = await iterator2.next()
-    }
     sg.G = g
 
     return sg
@@ -73,7 +64,7 @@ export class SymbolGraph {
 
     let i = 0
     for (const edge of set) {
-      const [key1, key2] = edge.split("-")
+      const [key1, key2] = edge.split("__")
       if (!this.keyMap.has(key1)) {
         this.keyMap.set(key1, i)
         this.keys[i] = key1
@@ -92,7 +83,7 @@ export class SymbolGraph {
     this.G = new Graph(this.keys.length)
 
     for (const edge of set) {
-      const [key1, key2] = edge.split("-")
+      const [key1, key2] = edge.split("__")
       const v = this.index(key1)
       const w = this.index(key2)
       this.G.addEdge(v, w)

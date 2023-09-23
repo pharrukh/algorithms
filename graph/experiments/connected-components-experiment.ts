@@ -1,5 +1,5 @@
 import path from "path"
-import { generateBerlinSbahnGraph } from "./generate-berlin-sbahn-graph"
+import { generateBerlinSbahnSymbolGraph } from "./generate-berlin-sbahn-graph"
 import { generateErdosRenyiGraph } from "./generate-erdos-renyi-graph"
 import { generateRandomSimpleGraph } from "./generate-random-simple-graph"
 import { generateRandomSparseGraphs } from "./generate-random-sparse-graphs"

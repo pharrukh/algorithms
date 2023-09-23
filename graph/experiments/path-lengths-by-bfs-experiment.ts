@@ -1,6 +1,6 @@
 import path from "path"
 import { DepthFirstPath } from "../depth-first-path"
-import { generateBerlinSbahnGraph } from "./generate-berlin-sbahn-graph"
+import { generateBerlinSbahnSymbolGraph } from "./generate-berlin-sbahn-graph"
 import { generateErdosRenyiGraph } from "./generate-erdos-renyi-graph"
 import { generateRandomSimpleGraph } from "./generate-random-simple-graph"
 import { generateRandomSparseGraphs } from "./generate-random-sparse-graphs"
@@ -8,7 +8,7 @@ import { getRandomVertex } from "./random-utils"
 import { Graph } from "../graph"
 import { BreadthFirstPath } from "../breadth-first-path"
 
-const berlinSbahnSymbolGraph = generateBerlinSbahnGraph()
+const berlinSbahnSymbolGraph = generateBerlinSbahnSymbolGraph()
 
 const V = 170
 const E = 200

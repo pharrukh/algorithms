@@ -30,21 +30,30 @@ const berlinStationCoordinatesAsSting = readFileSync(
   "BVV-Station-Coordinates.CSV"
 )
 
+const R = 6371 // Earth radius
+// see https://stackoverflow.com/a/1185413/3407539
+function calcX(lat: number, lon: number): number {
+  return R * Math.cos(lat) * Math.cos(lon)
+}
+
+function calcY(lat: number, lon: number): number {
+  return R * Math.cos(lat) * Math.sin(lon)
+}
+
 let i = 0
 const map = new Map<string, [number, number]>()
 for (let line of berlinStationCoordinatesAsSting.toString().split("\n")) {
   if (i++ === 0) continue
-  const [name, elementName, , , , x, y] = line.split(";")
+  const [name, elementName, , , , lonStr, latStr] = line.split(";")
   if (map.has(name)) continue
-  if (name && x && y) {
-    map.set(name, [
-      parseFloat(x.replace(",", ".")),
-      parseFloat(y.replace(",", ".")),
-    ])
-    map.set(elementName, [
-      parseFloat(x.replace(",", ".")),
-      parseFloat(y.replace(",", ".")),
-    ])
+  if (name && lonStr && latStr) {
+    const lon = parseFloat(lonStr.replace(",", "."))
+    const lat = parseFloat(latStr.replace(",", "."))
+
+    const x = calcX(lat, lon)
+    const y = calcY(lat, lon)
+    map.set(name, [x, y])
+    map.set(elementName, [x, y])
   }
 }
 

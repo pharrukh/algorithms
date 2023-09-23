@@ -4,40 +4,8 @@ import stationCoordinateMap from "./data/clean/berlin-station-names-with-coordin
 import { EuclidianGraph, Point } from "../creative/euclidian-graph"
 import { SymbolGraph } from "../symbol-graph"
 import { Edge } from "../types"
-import { BreadthFirstPath } from "../breadth-first-path"
-import { createInterface } from "readline"
-import { generateErdosRenyiGraph } from "./generate-erdos-renyi-graph"
 
-export function generateBerlinSbahnGraph(): SymbolGraph {
-  const g = new EuclidianGraph()
-  const map = new Map(stationCoordinateMap as [[string, [number, number]]])
-  
-  for (const line in lines) {
-    const stations = lines[line]
-    for (let i = 0; i < stations.length - 1; i++) {
-      const aName = stations[i]
-      const bName = stations[i + 1]
-  
-      const aCoordinates = map.get(aName)
-      const aStation: Point = {
-        name: aName,
-        x: aCoordinates[0],
-        y: aCoordinates[1],
-      }
-      if (!g.contains(aStation)) g.addVertex(aStation)
-  
-      const bCoordinates = map.get(bName)
-      const bStation: Point = {
-        name: aName,
-        x: bCoordinates[0],
-        y: bCoordinates[1],
-      }
-      if (!g.contains(bStation)) g.addVertex(bStation)
-  
-      g.addEdge(aStation, bStation)
-    }
-  }
-  
+export function generateBerlinSbahnSymbolGraph(): SymbolGraph {
   const edges = new Set<Edge>()
   for (const line in lines) {
     const stations = lines[line]
@@ -48,11 +16,44 @@ export function generateBerlinSbahnGraph(): SymbolGraph {
     }
   }
   // console.log(map.size, edges.size)
-  
+
   const sg = new SymbolGraph(edges)
   return sg
 }
 
+export function generateBerlinSbahnEuclidianGraph(): EuclidianGraph {
+  const g = new EuclidianGraph()
+  const map = new Map(stationCoordinateMap as [[string, [number, number]]])
+
+  console.log(map.size)
+  for (const line in lines) {
+    const stations = lines[line]
+    for (let i = 0; i < stations.length - 1; i++) {
+      const aName = stations[i]
+      const bName = stations[i + 1]
+
+      const aCoordinates = map.get(aName)
+      const aStation: Point = {
+        name: aName,
+        x: aCoordinates[0],
+        y: aCoordinates[1],
+      }
+      if (!g.contains(aStation)) g.addVertex(aStation)
+
+      const bCoordinates = map.get(bName)
+      const bStation: Point = {
+        name: bName,
+        x: bCoordinates[0],
+        y: bCoordinates[1],
+      }
+      if (!g.contains(bStation)) g.addVertex(bStation)
+
+      g.addEdge(aStation, bStation)
+    }
+  }
+
+  return g
+}
 
 // ;(async () => {
 //   const sg = generateBerlinSbahnGraph()

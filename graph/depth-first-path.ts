@@ -13,10 +13,13 @@ export class DepthFirstPath implements Paths {
   }
 
   private dfs(G: Graph, u: number) {
+    if (!G.hasVertex(u))
+      throw new Error(`The graph does not have vertex ${u}, ${G.toString()}`)
+
     const stack = new Stack<number>()
     stack.push(u)
 
-    while(!stack.isEmpty()) {
+    while (!stack.isEmpty()) {
       const v = stack.pop()
       this.marked[v] = true
 
