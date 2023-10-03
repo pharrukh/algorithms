@@ -26,6 +26,7 @@ export class ConnectedComponents {
 
     while (!stack.isEmpty()) {
       const v = stack.pop()
+      if (this.marked[v]) continue
 
       this.components[this.count].push(v)
       this.ids[v] = this.count
@@ -34,6 +35,7 @@ export class ConnectedComponents {
       for (let w of G.adj(v)) {
         if (this.marked[w]) continue
         stack.push(w)
+        this.marked[w] = true
       }
     }
   }

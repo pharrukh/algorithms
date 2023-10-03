@@ -39,10 +39,7 @@ import { Edge } from "./types"
   }
   console.log(`set length ${edgeSet.size}`)
 
-  const subSg = new SymbolGraph(edgeSet)n
-  console.log(`symbol graph is built: ${subSg.G.V()} ${subSg.G.E()}`)
-  console.log(subSg.name(297 + 1))
-  // const gProps = new GraphProperties(subSg.G)
+  const gProps = new GraphProperties(g)
 
   console.log(`
   # of conn components: ${components.length}
@@ -51,10 +48,5 @@ import { Edge } from "./types"
     components.map((c) => c.length).filter((l) => l < 10).length
   }
   `)
-  // console.log(gProps.toString())
-  console.log(
-    `Does the largest component have Kevin Bacon? ${
-      subSg.contains(kevinBaconKey) ? "yes" : "no"
-    }`
-  )
+  console.log(gProps.toString())
 })()

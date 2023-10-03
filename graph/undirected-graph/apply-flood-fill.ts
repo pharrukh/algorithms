@@ -1,4 +1,4 @@
-import { Queue } from "../queue/queue"
+import { Queue } from "../../queue/queue"
 
 const Offsets = [
   [0, 1],

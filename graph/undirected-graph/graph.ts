@@ -1,6 +1,6 @@
-import { Bag } from "../bag/bag"
 import { createReadStream } from "node:fs"
 import { createInterface } from "node:readline"
+import { Bag } from "../../bag/bag"
 
 export class Graph {
   private vCount: number
