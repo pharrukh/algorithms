@@ -6,11 +6,13 @@ export class Digraph {
   private vCount: number
   private eCount: number
   private adjList: Bag<number>[]
+  private indegreeList: number[]
 
   constructor(V: number = 0) {
     this.vCount = V
     this.eCount = 0
     this.adjList = Array.from({ length: V }, () => new Bag<number>())
+    this.indegreeList = Array.from({ length: V }, () => 0)
   }
 
   V(): number {
@@ -90,6 +92,7 @@ export class Digraph {
     if (v >= this.V() || w >= this.V()) throw new Error(error)
 
     this.adjList[v].add(w)
+    this.indegreeList[w]++
     this.eCount++
   }
 
@@ -97,6 +100,7 @@ export class Digraph {
     if (!this.hasEdge(v, w))
       throw new Error(`The edge (${v}-${w}) does not exist!`)
     this.adjList[v].remove(w)
+    this.indegreeList[w]--
     this.eCount--
   }
 
@@ -114,8 +118,12 @@ export class Digraph {
     return this.adjList[v]
   }
 
-  degree(v: number): number {
+  outdegree(v: number): number {
     return this.adjList[v].size
+  }
+
+  indegree(v: number): number {
+    return this.indegreeList[v]
   }
 
   hasEdge(v: number, w: number): boolean {
@@ -138,6 +146,16 @@ export class Digraph {
       str += `${i} : ${bag.toString()}\n`
     }
     return str
+  }
+
+  clone(): Digraph {
+    const copy = new Digraph(this.V())
+    for (let v = 0; v < this.V(); v++) {
+      for (const w of this.adj(v)) {
+        copy.addEdge(v, w)
+      }
+    }
+    return copy
   }
 }
 
