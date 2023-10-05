@@ -9,8 +9,7 @@ export class DirectedDFS {
   }
 
   dfs(G: Digraph, v: number): void {
-    if (this._marked[v]) return
-    this._marked[v]
+    this._marked[v] = true
     for (const w of G.adj(v)) {
       if (!this._marked[w]) this.dfs(G, w)
     }

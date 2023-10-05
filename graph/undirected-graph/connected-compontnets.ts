@@ -1,5 +1,4 @@
-import { Queue } from "../queue/queue"
-import { Stack } from "../stack/stack"
+import { Stack } from "../../stack/stack"
 import { Graph } from "./graph"
 
 export class ConnectedComponents {

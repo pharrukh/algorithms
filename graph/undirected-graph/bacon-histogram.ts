@@ -1,8 +1,8 @@
 import { createReadStream, writeFileSync } from "fs"
 import { createInterface } from "readline"
 import { Readline } from "readline/promises"
-import { Queue } from "../queue/queue"
-import { Stack } from "../stack/stack"
+import { Stack } from "../../stack/stack"
+import { Queue } from "../../queue/queue"
 
 class BagNode<T> {
   next: BagNode<T> | null

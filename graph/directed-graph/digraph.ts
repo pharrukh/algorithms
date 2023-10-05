@@ -157,6 +157,15 @@ export class Digraph {
     }
     return copy
   }
+
+  // source is a vertice that has indegree zero
+  sources(): number[] {
+    const sources = []
+    for (let v = 0; v < this.V(); v++) {
+      if (this.indegree(v) === 0) sources.push(v)
+    }
+    return sources
+  }
 }
 
 // ;(async () => {

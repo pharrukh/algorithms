@@ -1,11 +1,10 @@
 /// 4.1.24
 
-import { Stack } from "../stack/stack"
 import { ConnectedComponents } from "./connected-compontnets"
-import { Graph } from "./graph"
 import { GraphProperties } from "./graph-properties"
 import { SymbolGraph } from "./symbol-graph"
 import { Edge } from "./types"
+
 ;(async () => {
   const sg = await SymbolGraph.init("movies.txt", "/")
   const g = sg.G
@@ -32,9 +31,9 @@ import { Edge } from "./types"
     for (const w of g.adj(v)) {
       const vKey = sg.name(v)
       const wKey = sg.name(w)
-      if (edgeSet.has(`${vKey}-${wKey}`) || edgeSet.has(`${wKey}-${vKey}`))
+      if (edgeSet.has(`${vKey}__${wKey}`) || edgeSet.has(`${wKey}__${vKey}`))
         continue
-      edgeSet.add(`${vKey}-${wKey}`)
+      edgeSet.add(`${vKey}__${wKey}`)
     }
   }
   console.log(`set length ${edgeSet.size}`)

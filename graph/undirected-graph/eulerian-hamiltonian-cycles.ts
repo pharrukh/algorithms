@@ -1,4 +1,4 @@
-import { Stack } from "../stack/stack"
+import { Stack } from "../../stack/stack"
 import { hasCycle } from "./cycle"
 import { Graph } from "./graph"
 

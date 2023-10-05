@@ -1,4 +1,4 @@
-import { Queue } from "../queue/queue"
+import { Queue } from "../../queue/queue"
 import { Graph } from "./graph"
 
 let distTo

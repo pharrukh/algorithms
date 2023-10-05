@@ -4,6 +4,8 @@ import stationCoordinateMap from "./data/clean/berlin-station-names-with-coordin
 import { EuclidianGraph, Point } from "../creative/euclidian-graph"
 import { SymbolGraph } from "../symbol-graph"
 import { Edge } from "../types"
+import { BreadthFirstPath } from "../breadth-first-path"
+import { createInterface } from "readline"
 
 export function generateBerlinSbahnSymbolGraph(): SymbolGraph {
   const edges = new Set<Edge>()
@@ -55,51 +57,57 @@ export function generateBerlinSbahnEuclidianGraph(): EuclidianGraph {
   return g
 }
 
-// ;(async () => {
-//   const sg = generateBerlinSbahnGraph()
+;(async () => {
+  const sg = generateBerlinSbahnSymbolGraph()
 
-//   const rl = createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//   })
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  })
 
-//   for await (const sink of rl) {
-//     console.log('Please, write from and to stations separated by comma, like this: "Wuhletal,Warschauer Straße".')
-//     const [from, to] = sink.split(",")
-//     // console.log("V:", sg.G.V(), " E:", sg.G.E())
-//     const g = sg.G
-//     if (!sg.contains(from))
-//       throw new Error(`The symbol graph does not have "${from}"`)
+  const message =
+    'Please, write from and to stations separated by comma, like this: "Wuhletal,Warschauer Straße | Raoul-Wallenberg-Straße,Wuhletal | Raoul-Wallenberg-Straße,Potsdam Hauptbahnhof".'
+  console.log(message)
 
-//     const s = sg.index(from)
-//     const bfs = new BreadthFirstPath(g, s)
+  for await (const sink of rl) {
+    const [from, to] = sink.split(",")
+    // console.log("V:", sg.G.V(), " E:", sg.G.E())
+    const g = sg.G
+    if (!sg.contains(from))
+      throw new Error(`The symbol graph does not have "${from}"`)
 
-//     // const bfp = new BreadthFirstPath(berlinSbahnGraph, sg.index(from))
-//     // const path = bfp.pathTo(sg.index(to))
+    const s = sg.index(from)
+    const bfs = new BreadthFirstPath(g, s)
 
-//     // console.log(bfp.hasPathTo(sg.index(to)), getPrintablePathTo(path, sg))
+    const bfp = new BreadthFirstPath(sg.G, sg.index(from))
+    const path = bfp.pathTo(sg.index(to))
 
-//     // function getPrintablePathTo(path: Iterable<number>, sg: SymbolGraph): string {
-//     //   let str = ""
-//     //   for (let v of path) {
-//     //     str += " -> " + sg.name(v)
-//     //   }
-//     //   return str
-//     // }
+    console.log(bfp.hasPathTo(sg.index(to)), getPrintablePathTo(path, sg))
 
-//     if (sg.contains(to)) {
-//       const t = sg.index(to)
-//       if (bfs.hasPathTo(t)) {
-//         for (const v of bfs.pathTo(t)) {
-//           console.log("   " + sg.name(v))
-//         }
-//       } else {
-//         console.log("Not connected")
-//       }
-//     } else {
-//       console.log("   Not in database.")
-//     }
-//   }
+    function getPrintablePathTo(
+      path: Iterable<number>,
+      sg: SymbolGraph
+    ): string {
+      let str = ""
+      for (let v of path) {
+        str += " -> " + sg.name(v)
+      }
+      return str
+    }
 
-//   rl.close()
-// })()
+    if (sg.contains(to)) {
+      const t = sg.index(to)
+      if (bfs.hasPathTo(t)) {
+        for (const v of bfs.pathTo(t)) {
+          console.log("   " + sg.name(v))
+        }
+      } else {
+        console.log("Not connected")
+      }
+    } else {
+      console.log("   Not in database.")
+    }
+  }
+
+  rl.close()
+})()

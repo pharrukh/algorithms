@@ -1,5 +1,5 @@
-import { Queue } from "../queue/queue"
-import { Stack } from "../stack/stack"
+import { Queue } from "../../queue/queue"
+import { Stack } from "../../stack/stack"
 import { Graph } from "./graph"
 import { Paths } from "./types"
 
