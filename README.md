@@ -31,3 +31,9 @@ Replace `<filename.ts>` with the name of the file you wish to run.
 #### License:
 
 This project is licensed under the MIT License.
+
+
+### Algorithms in Java
+
+## How to execute
+> java-algs4 <file-name>
