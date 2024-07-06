@@ -2,3 +2,5 @@
 *.js.map
 /node_modules
 /video/*.mov
+.DS_Store
+/algs4-data
