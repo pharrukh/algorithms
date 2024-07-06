@@ -57,7 +57,7 @@ python <file-name>
 
 ### Acknoledgement
 
-This repo is largely inspired by [algorithms-sedgewick-wayne](https://github.com/reneargento/algorithms-sedgewick-wayne/).
+This repo is largely inspired by [algorithms-sedgewick-wayne](https://github.com/reneargento/algorithms-sedgewick-wayne/).   
 Thanks to [Rene Argento](https://github.com/reneargento) for being a beacon in the goal of solving every problem from Sedgewick and Wayne. 
 
 
