@@ -1,4 +1,11 @@
-### Algorithms in TypeScript
+# Algorithms
+
+Solutions to the exercises of the _Algorithms_ (2015) by Robert Sedgewick and Kevin Wayne (Fourth Editon Deluxe).  
+
+<a href="url"><img src="assets/book_cover.jpg" align="right" height="280" width="200"></a>
+
+
+### TypeScript
 
 This repository contains a collection of implementations based on the book "Algorithms" by Robert Sedgewick. All code is written in TypeScript.
 
@@ -20,20 +27,8 @@ ts-node <filename.ts>
 
 Replace `<filename.ts>` with the name of the file you wish to run.
 
-#### Contributing:
 
-1. Fork the repository.
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request.
-
-#### License:
-
-This project is licensed under the MIT License.
-
-
-### Algorithms in Java
+### Java
 
 #### How to execute
 
@@ -41,7 +36,7 @@ This project is licensed under the MIT License.
 java-algs4 <file-name>
 ```
 
-### Algorithms in Python
+### Python
 
 #### How to setup
 
@@ -59,3 +54,21 @@ java-algs4 <file-name>
 ```bash
 python <file-name>
 ```
+
+### Acknoledgement
+
+This repo is largely inspired by [algorithms-sedgewick-wayne](https://github.com/reneargento/algorithms-sedgewick-wayne/).
+Thanks to [Rene Argento](https://github.com/reneargento) for being a beacon in the goal of solving every problem from Sedgewick and Wayne. 
+
+
+### Contributing
+
+1. Fork the repository.
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request.
+
+### License
+
+This project is licensed under the MIT License.
