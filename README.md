@@ -35,5 +35,27 @@ This project is licensed under the MIT License.
 
 ### Algorithms in Java
 
-## How to execute
-> java-algs4 <file-name>
+#### How to execute
+
+```bash
+java-algs4 <file-name>
+```
+
+### Algorithms in Python
+
+#### How to setup
+
+0. read [python documentation](https://github.com/pharrukh/lookup_repository/blob/master/python.md#pyenv---python-version-manager)
+1. `pyenv install pypy3.10-7.3.12`
+2. `pyenv virtualenv pypy3.10-7.3.12 algorithms`
+3. `pyenv virtualenvs`
+
+#### Development
+1. start: `pyenv activate algorithms`
+2. end: `pyenv deactivate algorithms`
+
+#### How to execute
+
+```bash
+python <file-name>
+```
