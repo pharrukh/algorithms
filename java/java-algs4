@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # # sets the path to the textbook libraries
-CLASSPATH="./algs4.jar"
+CLASSPATH="./lib/algs4.jar"
 
 # Execute on Windows/Linux using "java" but on OS X using "java_home -exec java"
 JAVA="java"

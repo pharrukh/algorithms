@@ -1,23 +1,23 @@
-package javalang.src.chapter2.section1;
+package chapter2.section1;
 
-import javalang.src.utils.Utils;
+import java.util.HashSet;
+import java.util.Set;
 
 import edu.princeton.cs.algs4.Draw;
+import utils.Utils;
 
-public class E17_Animation {
+public class E18_Tracing {
   private static int comparisons = 0;
   private static int swaps = 0;
-  private static boolean includeComparison = false;
 
   public static void main(String[] args) {
-    if (args.length < 3) {
-      System.err.println("Usage: java Animation <algorithm> <array size> <include comparison>");
+    if (args.length < 2) {
+      System.err.println("Usage: java Tracing <algorithm> <array size>");
       System.exit(1);
     }
 
     String algorithm = args[0];
     int n = Integer.parseInt(args[1]);
-    includeComparison = args[2].equals("includeComparison");
 
     Double[] A = Utils.generateRandomDoubleArray(n);
 
@@ -42,17 +42,21 @@ public class E17_Animation {
       System.exit(1);
     }
 
-    rerender(draw, A, -1, -1, n, -1, -1, algorithm,0);
+    rerender(draw, A, -1, -1, new HashSet<Integer>(), algorithm, 0);
   }
 
-  private static <T extends Comparable<T>> void rerender(Draw draw, T[] A, int swapIndex1, int swapIndex2,
-      int iteration, int currentIndex, int comparisonIndex, String algorithm, int h) {
+  private static <T extends Comparable<T>> void rerender(Draw draw, T[] A, int iteration, int destination,
+      Set<Integer> traceSet, String algorithm, int h) {
     // Clear the canvas
     draw.clear(new java.awt.Color(239, 224, 185)); // Light coffee color background
 
     // Draw the algorithm name, current iteration, number of comparisons, and swaps
     draw.setPenColor(Draw.BLACK);
-    String title = algorithm + "Sort | i: " + iteration + " | Comp.: " + comparisons + " | Swaps: " + swaps;
+    String title = algorithm + "Sort";
+    if (iteration >= 0) {
+      title += " | i: " + iteration;
+    }
+    title += " | Comp.: " + comparisons + " | Swaps: " + swaps;
     if (algorithm == "Shell")
       title += " | h: " + h;
     draw.text(A.length / 2.0, 1.05, title);
@@ -78,12 +82,12 @@ public class E17_Animation {
       double halfWidth = 0.4;
       double halfHeight = ((Double) A[i]) / 2.0;
 
-      if (i == currentIndex || i == comparisonIndex) {
-        draw.setPenColor(255, 255, 0); // Yellow for the current iteration bars
-      } else if (i == swapIndex1 || i == swapIndex2) {
-        draw.setPenColor(255, 69, 0); // Economist Red for the swapped bars
+      if (i == destination) {
+        draw.setPenColor(231, 76, 60); // Red modern
+      } else if (traceSet.contains(i)) {
+        draw.setPenColor(44, 62, 80); // Black modern
       } else {
-        draw.setPenColor(34, 139, 34); // Economist Green for the rest
+        draw.setPenColor(149, 165, 166); // Gray modern
       }
 
       draw.filledRectangle(x, y, halfWidth, halfHeight);
@@ -92,7 +96,7 @@ public class E17_Animation {
     draw.show();
     // Add a slight delay to visualize the sorting process
     try {
-      Thread.sleep(200); // 200 milliseconds delay
+      Thread.sleep(250); // 200 milliseconds delay
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
@@ -114,28 +118,31 @@ public class E17_Animation {
   public static <T extends Comparable<T>> void selectionSort(Draw draw, T[] A) {
     int N = A.length;
     for (int i = 0; i < N - 1; i++) {
+      Set<Integer> traceSet = new HashSet();
       int min = i;
       for (int j = i + 1; j < N; j++) {
-        if (includeComparison)
-          rerender(draw, A, -1, -1, i + 1, i, j, "Selection", 0); // Highlight current iteration bars
-        if (less(A[j], A[min]))
+        if (less(A[j], A[min])) {
           min = j;
+        }
+        traceSet.add(j);
       }
-      if (i != min) {
-        exch(A, i, min);
-        rerender(draw, A, i, min, i + 1, -1, -1, "Selection",0); // Highlight swapped bars
-      }
+      exch(A, i, min);
+      rerender(draw, A, i, i, traceSet, "Selection", 0); // Highlight swapped bars
     }
   }
 
   public static <T extends Comparable<T>> void insertionSort(Draw draw, T[] A) {
     int N = A.length;
     for (int i = 1; i < N; i++) {
+      Set<Integer> traceSet = new HashSet();
+      int min = -1;
       for (int j = i; j > 0 && less(A[j], A[j - 1]); j--) {
         exch(A, j, j - 1);
-        rerender(draw, A, j, j - 1, i + 1, -1, -1, "Insertion",0); // Highlight swapped bars
-        // }
+        min = j - 1;
+        traceSet.add(j);
+        traceSet.add(j - 1);
       }
+      rerender(draw, A, i, min, traceSet, "Insertion", 0); // Highlight swapped bars
     }
   }
 
@@ -144,12 +151,18 @@ public class E17_Animation {
     int h = 1;
     while (h < N / 3)
       h = h * 3 + 1;
+
     while (h >= 1) {
       for (int i = h; i < N; i++) {
+        Set<Integer> traceSet = new HashSet();
+        int min = -1;
         for (int j = i; j >= h && less(A[j], A[j - h]); j -= h) {
           exch(A, j, j - h);
-          rerender(draw, A, j, j - h, i + 1, -1, -1, "Shell",h); // Highlight swapped bars
+          min = j - h;
+          traceSet.add(j);
+          traceSet.add(j - h);
         }
+        rerender(draw, A, i, min, traceSet, "Shell", h); // Highlight swapped bars
       }
       h /= 3;
     }
