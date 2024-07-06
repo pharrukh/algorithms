@@ -31,9 +31,6 @@ public class E17_Animation {
     draw.setXscale(-2, A.length + 2); // Adjust x-scale for left and right padding
     draw.setYscale(-0.05, 1.10); // Adjust y-scale for less bottom padding
 
-    // Set pen radius for bars
-    draw.setPenRadius(0.005);
-
     if (algorithm.equalsIgnoreCase("Selection")) {
       selectionSort(draw, A);
     } else if (algorithm.equalsIgnoreCase("Insertion")) {
@@ -44,6 +41,8 @@ public class E17_Animation {
       System.err.println("Unknown algorithm: " + algorithm);
       System.exit(1);
     }
+
+    rerender(draw, A, -1, -1, n, -1, -1, algorithm,0);
   }
 
   private static <T extends Comparable<T>> void rerender(Draw draw, T[] A, int swapIndex1, int swapIndex2,
@@ -127,8 +126,6 @@ public class E17_Animation {
         rerender(draw, A, i, min, i + 1, -1, -1, "Selection",0); // Highlight swapped bars
       }
     }
-    // Final render after the sort is complete
-    rerender(draw, A, -1, -1, N, -1, -1, "Selection",0);
   }
 
   public static <T extends Comparable<T>> void insertionSort(Draw draw, T[] A) {
@@ -140,8 +137,6 @@ public class E17_Animation {
         // }
       }
     }
-    // Final render after the sort is complete
-    rerender(draw, A, -1, -1, N, -1, -1, "Insertion",0);
   }
 
   public static <T extends Comparable<T>> void shellSort(Draw draw, T[] A) {
@@ -154,12 +149,9 @@ public class E17_Animation {
         for (int j = i; j >= h && less(A[j], A[j - h]); j -= h) {
           exch(A, j, j - h);
           rerender(draw, A, j, j - h, i + 1, -1, -1, "Shell",h); // Highlight swapped bars
-          // }
         }
       }
       h /= 3;
     }
-    // Final render after the sort is complete
-    rerender(draw, A, -1, -1, N, -1, -1, "Shell",1);
   }
 }
