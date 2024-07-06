@@ -1,9 +1,10 @@
-package chapter_2_sorting.section_2_1_elementary_sorting;
+package javalang.src.chapter2.section1;
 
-import java.util.Random;
+import javalang.src.utils.Utils;
+
 import edu.princeton.cs.algs4.Draw;
 
-public class Animation {
+public class E17_Animation {
   private static int comparisons = 0;
   private static int swaps = 0;
   private static boolean includeComparison = false;
@@ -18,7 +19,7 @@ public class Animation {
     int n = Integer.parseInt(args[1]);
     includeComparison = args[2].equals("includeComparison");
 
-    Double[] A = generateRandomArray(n);
+    Double[] A = Utils.generateRandomDoubleArray(n);
 
     // Create a Draw object
     Draw draw = new Draw();
@@ -43,15 +44,6 @@ public class Animation {
       System.err.println("Unknown algorithm: " + algorithm);
       System.exit(1);
     }
-  }
-
-  private static Double[] generateRandomArray(int n) {
-    Double[] array = new Double[n];
-    Random random = new Random();
-    for (int i = 0; i < n; i++) {
-      array[i] = random.nextDouble();
-    }
-    return array;
   }
 
   private static <T extends Comparable<T>> void rerender(Draw draw, T[] A, int swapIndex1, int swapIndex2,
