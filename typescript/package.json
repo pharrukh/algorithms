@@ -11,11 +11,13 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/d3-random": "^3.0.3",
     "@types/node": "^20.3.3",
     "ts-node": "^10.9.1"
   },
   "dependencies": {
     "@leeoniya/ufuzzy": "^1.0.10",
-    "typescript": "^5.2.2"
+    "d3-random": "^3.0.1",
+    "typescript": "^5.5.2"
   }
 }

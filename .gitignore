@@ -1,6 +1,6 @@
 *.js
 *.js.map
-/node_modules
+/typescript/node_modules
 /video/*.mov
 .DS_Store
 /algs4-data
