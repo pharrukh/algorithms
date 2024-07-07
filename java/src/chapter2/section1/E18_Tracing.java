@@ -25,11 +25,11 @@ public class E18_Tracing {
     Draw draw = new Draw();
 
     // Set canvas size
-    draw.setCanvasSize(800, 600);
+    draw.setCanvasSize(1500, 300);
 
     // Set scale with padding
     draw.setXscale(-2, A.length + 2); // Adjust x-scale for left and right padding
-    draw.setYscale(-0.05, 1.10); // Adjust y-scale for less bottom padding
+    draw.setYscale(-0.05, 1.15); // Adjust y-scale for less bottom padding
 
     if (algorithm.equalsIgnoreCase("Selection")) {
       selectionSort(draw, A);
