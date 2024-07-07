@@ -10,11 +10,11 @@ if [ -z "$input_dir" ]; then
 fi
 
 # Iterate over all .MOV files in the directory
-for mov_file in "$input_dir"/*.mov; do
+for mov_file in "$input_dir"/*-100.mov; do
   # Get the base name of the file without extension
   base_name=$(basename "$mov_file" .mov)
   # Convert .MOV to .GIF
-  ffmpeg -i "$mov_file" -vf "fps=12,scale=300:-1:flags=lanczos" "$input_dir/$base_name.gif"
+  ffmpeg -i "$mov_file" -vf "fps=60,scale=1200:-1:flags=lanczos" "$input_dir/$base_name.gif"
 done
 
 echo "Conversion completed."
