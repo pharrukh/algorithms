@@ -16,6 +16,10 @@ gray_modern_color = (149/255, 165/255, 166/255)
 green_emerald_color = (80/255, 200/255, 120/255)
 speed_delay = 0.5
 
+blue_modern_color = (0/255, 120/255, 210/255)
+white_modern_color = (220/255, 220/255, 220/255)
+green_modern_color = (0/255, 158/255, 96/255)
+
 def generate_random_array(n):
     return [random.random() for _ in range(n)]
 
@@ -32,7 +36,7 @@ def exch(A, i, j):
 def rerender(A, destination, traceSet = set(), algorithm = "", h=0):
     plt.clf()
     fig = plt.gcf()
-    
+
     fig.patch.set_facecolor(ligth_coffee_color)
 
     ax = plt.gca()
@@ -75,7 +79,15 @@ def rerender(A, destination, traceSet = set(), algorithm = "", h=0):
     ax.add_patch(plt.Rectangle((0.01,0.98),             # Set location of rectangle by lower left corder
                             0.05,                       # Width of rectangle
                             0.55,                       # Height of rectangle.
-                            facecolor=red_modern_color, 
+                            facecolor=blue_modern_color, 
+                            transform=fig.transFigure, 
+                            clip_on=False, 
+                            linewidth = 0))
+    
+    ax.add_patch(plt.Rectangle((0.94, 0.02),             # Set location of rectangle by lower left corder
+                            0.05,                       # Width of rectangle
+                            -0.55,                       # Height of rectangle.
+                            facecolor=green_modern_color, 
                             transform=fig.transFigure, 
                             clip_on=False, 
                             linewidth = 0))
