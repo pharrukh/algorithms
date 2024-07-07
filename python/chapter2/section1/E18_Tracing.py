@@ -13,6 +13,8 @@ green_color = (34/255, 139/255, 34/255)
 red_modern_color = (231/255, 76/255, 60/255)
 black_modern_color = (44/255, 62/255, 80/255)
 gray_modern_color = (149/255, 165/255, 166/255)
+green_emerald_color = (80/255, 200/255, 120/255)
+speed_delay = 0.5
 
 def generate_random_array(n):
     return [random.random() for _ in range(n)]
@@ -27,7 +29,7 @@ def exch(A, i, j):
     swaps += 1
     A[i], A[j] = A[j], A[i]
 
-def rerender(A, iteration, destination, traceSet = set(), algorithm = "", h=0):
+def rerender(A, destination, traceSet = set(), algorithm = "", h=0):
     plt.clf()
     fig = plt.gcf()
     
@@ -55,16 +57,35 @@ def rerender(A, iteration, destination, traceSet = set(), algorithm = "", h=0):
 
     plt.bar(range(len(A)), A, width=0.95, color=[
         red_modern_color if i == destination else
-        gray_modern_color if i in traceSet else
-        black_modern_color for i in range(len(A))
+        black_modern_color if i in traceSet else
+        gray_modern_color for i in range(len(A))
     ])
-    title = f"{algorithm} Sort | i: {iteration} | Comp.: {comparisons} | Swaps: {swaps}"
+    title = f"{algorithm} Sort"
+
+    subtitle = f"Comp.: {comparisons}, Swaps: {swaps}"
     if algorithm == "Shell":
-        title += f" | h: {h}"
-    plt.title(title, fontsize=14, fontfamily='Arial')
+        subtitle += f", h: {h}"
+
+    plt.title(title, fontsize=18, loc="left", fontfamily='Arial', fontweight='bold')
+    plt.text(-0.5, 1.01, subtitle, fontsize=14, fontfamily='Arial')
+    
     plt.text(-0.5, -0.2, "Source: Farrukh Normuradov", ha='left', fontsize=10, color='gray', fontfamily='Arial')
     plt.ylim(-0.05, 1.10)
-    plt.pause(0.01)
+
+    ax.add_patch(plt.Rectangle((0.01,0.98),             # Set location of rectangle by lower left corder
+                            0.05,                       # Width of rectangle
+                            0.55,                       # Height of rectangle.
+                            facecolor=red_modern_color, 
+                            transform=fig.transFigure, 
+                            clip_on=False, 
+                            linewidth = 0))
+
+    # Add delay based on speed
+    try:
+        global speed_delay
+        plt.pause(speed_delay)
+    except Exception as e:
+        print(e)
 
 def selection_sort(A):
     N = len(A)
@@ -77,22 +98,22 @@ def selection_sort(A):
                 min_idx = j
         if i != min_idx:
             exch(A, i, min_idx)
-            rerender(A, i + 1, i, traceSet, "Selection")
+            rerender(A, i, traceSet, "Selection")
 
 def insertion_sort(A):
     N = len(A)
     for i in range(1, N):
-        min_idx = i
+        min_idx = -1
         traceSet = set()
         for j in range(i, 0, -1):
+            traceSet.add(j)
+            traceSet.add(j-1)
             if less(A[j], A[j - 1]):
                 exch(A, j, j - 1)
                 min_idx = j - 1
-                traceSet.add(j)
-                traceSet.add(j-1)
             else:
                 break
-        rerender(A, i+1, min_idx, traceSet, "Insertion")
+        rerender(A, min_idx, traceSet, "Insertion")
 
 def shell_sort(A):
     N = len(A)
@@ -102,26 +123,39 @@ def shell_sort(A):
     while h >= 1:
         for i in range(h, N):
             traceSet = set()
-            min_idx = i
+            min_idx = -1
             for j in range(i, h-1, -h):
+                traceSet.add(j)
+                traceSet.add(j-h)
                 if less(A[j], A[j - h]):
                     exch(A, j, j - h)
-                    min_idx = j - 1
-                    traceSet.add(j)
-                    traceSet.add(j-1)
-            rerender(A, i + 1, min_idx, traceSet, "Shell", h)
+                    min_idx = j - h
+                else:
+                    break
+            rerender(A, min_idx, traceSet, "Shell", h)
         h //= 3
 
 def main():
-    global include_comparison
     if len(sys.argv) < 3:
-        print("Usage: python Animation.py <algorithm> <array size> <include comparison>")
+        print("Usage: python Animation.py <algorithm> <array size> <speed>")
         sys.exit(1)
 
     algorithm = sys.argv[1]
     n = int(sys.argv[2])
-    include_comparison = sys.argv[3].lower() == 'includecomparison' if len(sys.argv) > 3 else False
     A = generate_random_array(n)
+    speed = sys.argv[3].lower() if len(sys.argv) > 3 else 'normal'
+
+    # Set speed delay based on input
+    global speed_delay
+    if speed == 'slow':
+        speed_delay = 1.0
+    elif speed == 'normal':
+        speed_delay = 0.5
+    elif speed == 'fast':
+        speed_delay = 0.01
+    else:
+        print("Unknown speed: ", speed)
+        sys.exit(1)
 
     plt.ion()
     fig = plt.figure(figsize=(15, 3))
@@ -137,7 +171,7 @@ def main():
         print("Unknown algorithm:", algorithm)
         sys.exit(1)
 
-    rerender(A, -1, n, algorithm=algorithm)
+    rerender(A, -1, algorithm=algorithm)
 
     plt.ioff()
     plt.show()
