@@ -2,102 +2,95 @@ import sys
 import random
 import matplotlib.pyplot as plt
 
+# Configuration for plot appearance
 plt.rcParams['font.family'] = 'Arial'
 
+# Global variables for counting comparisons and swaps
 comparisons = 0
 swaps = 0
-ligth_coffee_color = (239/255, 224/255, 185/255)
-red_color = (255/255, 69/255, 0/255)
-green_color = (34/255, 139/255, 34/255)
 
+# Colors
+ligth_coffee_color = (239/255, 224/255, 185/255)
 red_modern_color = (231/255, 76/255, 60/255)
 black_modern_color = (44/255, 62/255, 80/255)
 gray_modern_color = (149/255, 165/255, 166/255)
-green_emerald_color = (80/255, 200/255, 120/255)
-speed_delay = 0.5
-
 blue_modern_color = (0/255, 120/255, 210/255)
 white_modern_color = (220/255, 220/255, 220/255)
 green_modern_color = (0/255, 158/255, 96/255)
+speed_delay = 0.5
 
 def generate_random_array(n):
+    """Generates a random array of size n."""
     return [random.random() for _ in range(n)]
 
 def less(v, w):
+    """Checks if v is less than w and increments the comparison counter."""
     global comparisons
     comparisons += 1
     return v < w
 
 def exch(A, i, j):
+    """Exchanges elements at indices i and j in array A and increments the swap counter."""
     global swaps
     swaps += 1
     A[i], A[j] = A[j], A[i]
 
-def rerender(A, destination, traceSet = set(), algorithm = "", h=0):
-    plt.clf()
+def setup_plot():
+    """Sets up the plot with background color and removed spines."""
     fig = plt.gcf()
-
     fig.patch.set_facecolor(ligth_coffee_color)
-
     ax = plt.gca()
     ax.set_facecolor(ligth_coffee_color)
-
-    # Hide all spines except the bottom one
     ax.spines['top'].set_visible(False)
     ax.spines['right'].set_visible(False)
     ax.spines['left'].set_visible(False)
-    ax.spines['bottom'].set_position('zero')  # Position the bottom spine (x-axis) at y=0
+    ax.spines['bottom'].set_position('zero')
+    ax.yaxis.set_visible(False)
+    plt.subplots_adjust(left=0.01, right=0.99, top=0.85, bottom=0.13)
 
-    ax.set_xlim(-0.5, len(A) - 0.5)
-    
-    # Set the x-axis limits and display only the first and last values along with some intermediate values
-    ax.set_xticks([0] + list(range(1, len(A)-1, max(1, len(A)//10))) + [len(A)-1])
-    ax.set_xticklabels([str(x) for x in ax.get_xticks()], fontfamily='Arial')
-    ax.xaxis.set_tick_params(size=0)  # Remove the tick marks
-
-    ax.yaxis.set_visible(False)  # Hide the y-axis
-
-    plt.subplots_adjust(left=0.01, right=0.99, top=0.85, bottom=0.13)  # Minimize margins
-
+def draw_bars(A, destination, traceSet):
+    """Draws bars representing the array A."""
     plt.bar(range(len(A)), A, width=0.95, color=[
         red_modern_color if i == destination else
         black_modern_color if i in traceSet else
         gray_modern_color for i in range(len(A))
     ])
-    title = f"{algorithm} Sort"
 
+def add_text_and_labels(algorithm, h):
+    """Adds title, subtitle, and source text to the plot."""
+    title = f"{algorithm} Sort"
     subtitle = f"Comp.: {comparisons}, Swaps: {swaps}"
     if algorithm == "Shell":
         subtitle += f", h: {h}"
-
+    
     plt.title(title, fontsize=18, loc="left", fontfamily='Arial', fontweight='bold')
     plt.text(-0.5, 1.01, subtitle, fontsize=14, fontfamily='Arial')
-    
     plt.text(-0.5, -0.2, "Source: Farrukh Normuradov", ha='left', fontsize=10, color='gray', fontfamily='Arial')
-    plt.ylim(-0.05, 1.10)
 
-    ax.add_patch(plt.Rectangle((0.01,0.98),             # Set location of rectangle by lower left corder
-                            0.05,                       # Width of rectangle
-                            0.55,                       # Height of rectangle.
-                            facecolor=blue_modern_color, 
-                            transform=fig.transFigure, 
-                            clip_on=False, 
-                            linewidth = 0))
+def draw_decorations():
+    """Adds decorations such as rectangles to the plot."""
+    fig = plt.gcf()
+    ax = plt.gca()
+    ax.add_patch(plt.Rectangle((0.01,0.98), 0.05, 0.55, facecolor=blue_modern_color, transform=fig.transFigure, clip_on=False, linewidth=0))
+    ax.add_patch(plt.Rectangle((0.94, 0.02), 0.05, -0.55, facecolor=green_modern_color, transform=fig.transFigure, clip_on=False, linewidth=0))
+
+def rerender(A, destination, traceSet=set(), algorithm="", h=0):
+    """Rerenders the plot with updated data."""
+    plt.clf()
+    setup_plot()
+    draw_bars(A, destination, traceSet)
+    add_text_and_labels(algorithm, h)
+    draw_decorations()
+    plt.ylim(-0.05, 1.10)
     
-    ax.add_patch(plt.Rectangle((0.94, 0.02),             # Set location of rectangle by lower left corder
-                            0.05,                       # Width of rectangle
-                            -0.55,                       # Height of rectangle.
-                            facecolor=green_modern_color, 
-                            transform=fig.transFigure, 
-                            clip_on=False, 
-                            linewidth = 0))
+    ax = plt.gca()
+    ax.set_xlim(-0.5, len(A) - 0.5)
+    ax.set_xticks([0] + list(range(1, len(A)-1, max(1, len(A)//10))) + [len(A)-1])
+    ax.set_xticklabels([str(x) for x in ax.get_xticks()], fontfamily='Arial')
+    ax.xaxis.set_tick_params(size=0)
 
     # Add delay based on speed
-    try:
-        global speed_delay
-        plt.pause(speed_delay)
-    except Exception as e:
-        print(e)
+    plt.pause(speed_delay)
 
 def selection_sort(A):
     N = len(A)
@@ -156,7 +149,6 @@ def main():
     A = generate_random_array(n)
     speed = sys.argv[3].lower() if len(sys.argv) > 3 else 'normal'
 
-    # Set speed delay based on input
     global speed_delay
     if speed == 'slow':
         speed_delay = 1.0
@@ -170,7 +162,7 @@ def main():
 
     plt.ion()
     fig = plt.figure(figsize=(15, 3))
-    fig.patch.set_facecolor(ligth_coffee_color)  # Set the background color to light coffee
+    fig.patch.set_facecolor(ligth_coffee_color)
 
     if algorithm.lower() == "selection":
         selection_sort(A)
@@ -183,7 +175,6 @@ def main():
         sys.exit(1)
 
     rerender(A, -1, algorithm=algorithm)
-
     plt.ioff()
     plt.show()
 
