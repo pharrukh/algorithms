@@ -96,9 +96,8 @@ def selection_sort(A):
             traceSet.add(j)
             if less(A[j], A[min_idx]):
                 min_idx = j
-        if i != min_idx:
-            exch(A, i, min_idx)
-            rerender(A, i, traceSet, "Selection")
+        rerender(A, min_idx, traceSet, "Selection")
+        exch(A, i, min_idx)
 
 def insertion_sort(A):
     N = len(A)
