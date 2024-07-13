@@ -25,7 +25,7 @@ function main() {
   }
 }
 
-function shellsort(array: number[]): ComparesByIncrement[] {
+export function shellsort(array: number[]): ComparesByIncrement[] {
   const comparesByIncrements: ComparesByIncrement[] = []
   let numberOfCompares: number
 

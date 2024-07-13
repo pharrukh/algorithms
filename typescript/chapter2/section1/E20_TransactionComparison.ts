@@ -1,11 +1,8 @@
 import { Result, err, ok } from "../../basic-types"
 import "../../date-extensions"
+import { Comparable } from "../../sorting/types"
 
-interface Comparable {
-  compareTo(that: this): number
-}
-
-export class Transaction implements Comparable {
+export class Transaction implements Comparable<Transaction> {
   private constructor(public who: string, public date: Date, public amount: number) {}
 
   public static create(who: string, date: Date, amount: number): Result<Transaction, string> {
@@ -33,9 +30,13 @@ export class Transaction implements Comparable {
     return ok(true)
   }
 
-  public compareTo(that: Transaction): number {
+  public compareTo(that: Transaction): 1 | 0 | -1 {
     if (this.amount > that.amount) return +1
     if (this.amount < that.amount) return -1
     return 0
+  }
+
+  public toString(): string {
+    return `<${this.who}, ${this.date.toISOString()}, ${this.amount}>`
   }
 }

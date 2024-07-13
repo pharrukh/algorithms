@@ -1,7 +1,3 @@
-interface Comparable {
-    compare(b: Comparable): -1 | 0 | 1
-}
-
 class MaxHeap {
     size: number = 0
     arr: number[] = []
