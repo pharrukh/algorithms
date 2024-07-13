@@ -2,7 +2,7 @@
 
 Solutions to the exercises of the _Algorithms_ (2015) by Robert Sedgewick and Kevin Wayne (Fourth Edition Deluxe).
 
-<a href="url"><img src="assets/book_cover.jpg" align="right" height="280" width="200"></a>
+<a href="https://algs4.cs.princeton.edu/home/"><img src="assets/book_cover.jpg" align="right" height="280" width="200"></a>
 
 ## Overview
 
