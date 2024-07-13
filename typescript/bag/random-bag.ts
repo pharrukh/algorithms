@@ -1,4 +1,4 @@
-import { shuffle } from "../sorting/fisher-yates-suffle"
+import { shuffle } from "../sorting/fisher-yates-shuffle"
 import { Bag, BagNode } from "./bag"
 
 export class RandomBag<T> extends Bag<T> {

@@ -1,4 +1,4 @@
-export function fisherYatesSuffle<T>(A: T[]): void {
+export function fisherYatesShuffle<T>(A: T[]): void {
   let i = A.length
   while (--i > 0) {
     const j = Math.floor(Math.random() * (i + 1))
@@ -7,7 +7,7 @@ export function fisherYatesSuffle<T>(A: T[]): void {
 }
 
 export function shuffle<T>(A: T[]): void {
-  fisherYatesSuffle(A)
+  fisherYatesShuffle(A)
 }
 
 // let i = 0
