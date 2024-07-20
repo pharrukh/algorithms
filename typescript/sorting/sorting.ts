@@ -14,3 +14,8 @@ export function isSorted<T extends Comparable<T>>(A: T[]): boolean {
   }
   return true
 }
+
+export function getSentinel<T extends Comparable<T>>(type: string): T {
+  if (type === "number") return -Infinity as any // TODO: update this
+  throw new Error(`Only 'number' type is supported for sentinel but got "${type}".`)
+}
