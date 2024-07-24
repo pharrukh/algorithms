@@ -1,7 +1,7 @@
 *.js
 *.js.map
 /typescript/node_modules
-/video/*.mov
+/visualization/video/*.mov
 .DS_Store
 /algs4-data
 java/out
