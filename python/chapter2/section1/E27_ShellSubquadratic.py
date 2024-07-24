@@ -71,8 +71,11 @@ color_map = {
 
 for algorithm in pivot_df.columns:
     plt.plot(pivot_df.index, pivot_df[algorithm], label=algorithm, color=color_map[algorithm], linewidth=2)
-    # Adding the name only once
-    ax.text(pivot_df.index[-1], pivot_df[algorithm].iloc[-1], f'{algorithm}', fontsize=10, color='black')
+    # Adding the name in the middle of the graph
+    mid_index = len(pivot_df.index) // 2
+    mid_x = pivot_df.index[mid_index]
+    mid_y = pivot_df[algorithm].iloc[mid_index]
+    ax.text(mid_x, mid_y, f'{algorithm}', fontsize=10, color='black', ha='center', va='center')
 
 plt.xlabel('Array Size')
 plt.ylabel('Time (seconds)')
